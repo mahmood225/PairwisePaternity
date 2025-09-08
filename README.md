@@ -26,11 +26,9 @@ source("Historical_Simulation.R")
 #Run the simulation
 set.seed(123)  # reproducibility
 
-Num_SRT <- 15
-
 simulated_STR <- Historical_Simulation(
 # STR parameters
-Num_SRT=15,
+Num_SRT=15, # Number of simulated STR
 Allele_num=rep(10,Num_SRT), # Number of the allele for each simulated STR
 Allele_num_random=F, # If True, randome number of allele will be produced based on Min_allele_num and Max_allele_num
 Typing_Error=c(rep(0.01,Num_SRT)), # typing error for each STR
@@ -58,7 +56,27 @@ n.cores = parallel::detectCores() - 2
 # Extract outputs
 ped <- simulated_STR$Simulated_Ped
 STR <- simulated_STR$Simulated_STR
+
+# Add name for simulated STRs
+colnames(STR)=paste0("STR",1:15)
+
+# Calculating the allele freq
+Allele_freq <- list()
+for (i in which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))) {
+  p=table(unlist(strsplit(STR[,i], ""), use.names=FALSE))/sum(table(unlist(strsplit(STR[,i], ""), use.names=FALSE)))
+  Allele_freq[[length(Allele_freq)+1]] <- list(p)
+}
+names(Allele_freq)<-colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]
+
+
+Allele_freq[["STR1"]]
+
 ```
 
+### Typing Error Calculation
 
+The function `Typing_Error_Calculation()` estimates locus-specific typing errors after the simulated population has been generated.  
+In real genetic studies, typing errors are common and their exact rates are usually unknown. Here, an error means that the true paternal or maternal allele at a locus is replaced by a random allele. These errors can appear in the genotypes of fathers, mothers, or offspring.  
+
+To approximate realistic error rates, the function looks for mismatches between parents and offspring across the simulated population (except the last two generations, which are kept for validation). It then counts how often mismatches occur at each STR locus, giving you an estimated error rate per locus that can be used in later paternity tests.
 
