@@ -9,19 +9,17 @@ Overall, the Pairwise algorithm complements existing tools such as CERVUS and CO
 
 The workflow consists of 6 main functions that process genotype data and estimate parentage:
 
-1. **Historical simulation:**
-This function generates the historical population used as the foundation for paternity analysis simulations. It creates multiple generations of individuals with short tandem repeat (STR) genotypes under Mendelian inheritance. The simulation incorporates mutation processes, allele frequency stabilization, and decreasing population sizes across historical generations to establish realistic genetic diversity. The output provides a stable base population with allele frequency distributions that can be used for subsequent forward or backward simulations in the Pairwise algorithm.
-
-## Example: Simulating STR Population
+### Simulating STR Population
 
 The function `Historical_Simulation()` generates a multi-generational STR-based population, following the genomic data simulation design from our paper.
+This function generates the historical population used as the foundation for paternity analysis simulations. It creates multiple generations of individuals with short tandem repeat (STR) genotypes under Mendelian inheritance. The simulation incorporates mutation processes, allele frequency stabilization, and decreasing population sizes across historical generations to establish realistic genetic diversity. The output provides a stable base population with allele frequency distributions that can be used for subsequent forward or backward simulations in the Pairwise algorithm.
 
 ```R
 # Load libraries
 install.packages(c("doParallel","foreach","data.table"))  # once
 library(doParallel)
 library(foreach)
-library(data.table)
+
 # Source the function files you need
 source("Historical_Simulation.R")
 
@@ -62,14 +60,5 @@ ped <- simulated_STR$Simulated_Ped
 STR <- simulated_STR$Simulated_STR
 ```
 
-
-2) Register parallel workers
-
-Historical_Simulation() takes n.cores, but registering the backend is still good practice (harmless if the function spins its own cluster).
-3. **Function 2 (name here):** Short explanation.  
-4. **Function 3 (name here):** Short explanation.  
-5. **Function 4 (name here):** Short explanation.  
-6. **Function 5 (name here):** Short explanation.  
-7. **Function 6 (name here):** Short explanation. 
 
 
