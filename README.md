@@ -80,3 +80,5 @@ In real genetic studies, typing errors are common and their exact rates are usua
 
 To approximate realistic error rates, the function looks for mismatches between parents and offspring across the simulated population (except the last two generations, which are kept for validation). It then counts how often mismatches occur at each STR locus, giving you an estimated error rate per locus that can be used in later paternity tests.
 
+
+
