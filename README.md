@@ -177,5 +177,49 @@ result_Case_sim_assignment <- Case_Assignment_Simulation(
 head(result_Case_sim_assignment)
 ```
 
+### Case Study – Paternity Test When Mother Is Unknown
 
+In this example, we test whether the alleged father of **offspring ID 2188** is the true biological father when the mother’s genotype is missing.  
+We use the function `LOD_Both_Unknown()` to calculate the likelihood ratio (LOD) score, and compare it to the simulated Δ (delta) distributions from both the **paternity test** and the **assignment test**.
+
+```r
+# Load the function
+source("./LOD_Both_Unknown.R")
+
+# Extract genotypes for offspring and parents
+Offs_STR   <- STR[STR$ID == 2188, colnames(STR) %in% names(Typing_Error)]
+FaID       <- ped$SireID[ped$ID == 2188]
+Father_STR <- STR[STR$ID == FaID, colnames(STR) %in% names(Typing_Error)]
+MoID       <- ped$DamID[ped$ID == 2188]
+Mother_STR <- STR[STR$ID == MoID, colnames(STR) %in% names(Typing_Error)]
+
+# Run paternity test (mother unknown)
+LOD <- LOD_Both_Unknown(
+  Offs_STR,
+  Father_STR,
+  Allele_freq,
+  Typing_Error
+)
+
+# Extract simulated Δ distributions
+Delta_LOD_paternity  <- result_Case_sim_paternity$Cases_Fa_Un_Mo[,"2188"]
+Delta_LOD_assignment <- result_Case_sim_assignment$One_Parent_Unknown_Another[,as.character(test_results$ID[i])]
+
+# Calculate p-values
+pval_paternity  <- sum(Delta_LOD_paternity  <= LOD) / length(Delta_LOD_paternity)
+pval_assignment <- sum(Delta_LOD_assignment <= LOD) / length(Delta_LOD_assignment)
+
+pval_paternity
+pval_assignment
+
+```
+
+**Results**
+
+**Paternity test p-value:** 0.9878
+
+**Assignment test p-value:** 0.477
+
+At a significance threshold of **α = 0.01**, the paternity test clearly supports that the alleged father of individual 2188 is the **true father**.
+The assignment test gives a lower value, but since the direct paternity test is highly significant, the conclusion remains that the tested male is indeed the biological father.
 
