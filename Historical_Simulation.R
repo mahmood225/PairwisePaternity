@@ -9,7 +9,6 @@ Historical_Simulation <- function(
   Min_allele_num=4,
   Max_allele_num=15,
   Typing_Error=c(rep(0.01,15)),
-  Typing_Error_Gradient=c(4,2),
   Mutation_Rate=0.00001,
   # general parameters
   Overlap_Gen_Num=2,
@@ -309,7 +308,8 @@ Historical_Simulation <- function(
       }
     }
   }
-  Ped=ped[ped$Gen!=0,]
+  ped[ped$Gen==0,c("DamID","SireID")]=NA
+  Ped=ped
   All_result=list()
   All_result[["Simulated_Ped"]]=Ped
   All_result[["Simulated_STR"]]=STR
