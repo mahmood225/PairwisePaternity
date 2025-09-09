@@ -203,7 +203,7 @@ LOD <- LOD_Both_Unknown(
 
 # Extract simulated Δ distributions
 Delta_LOD_paternity  <- result_Case_sim_paternity$Cases_Fa_Un_Mo[,"2188"]
-Delta_LOD_assignment <- result_Case_sim_assignment$One_Parent_Unknown_Another[,as.character(test_results$ID[i])]
+Delta_LOD_assignment <- result_Case_sim_assignment$One_Parent_Unknown_Another[,"2188"]
 
 # Calculate p-values
 pval_paternity  <- sum(Delta_LOD_paternity  <= LOD) / length(Delta_LOD_paternity)
@@ -223,3 +223,85 @@ pval_assignment
 At a significance threshold of **α = 0.01**, the paternity test clearly supports that the alleged father of individual 2188 is the **true father**.
 The assignment test gives a lower value, but since the direct paternity test is highly significant, the conclusion remains that the tested male is indeed the biological father.
 
+
+### Case Study – Paternity Test When Mother Is Known
+
+In this example, we test whether the alleged father of **offspring ID 2188** is the true biological father **given that the mother’s genotype is known**.  
+We use `LOD_One_Parent_Known()` to compute the LOD score for the alleged father while conditioning on the known mother.  
+We then compare that LOD to the **case-specific** Δ (delta) distributions from both the **paternity test** and the **assignment test** to obtain p-values.
+
+```r
+# Load the function
+source("./LOD_One_Parent_Known.R")
+
+# Compute LOD for father given known mother
+LOD <- LOD_One_Parent_Known(
+  Offs_STR            = Offs_STR,     # offspring STR vector (e.g., ID 2188)
+  Alleged_Parent_STR  = Father_STR,   # alleged parent STR vector (father)
+  Known_Parent_STR    = Mother_STR,   # known parent STR vector (mother)
+  Allele_freq         = Allele_freq,
+  Typing_Error        = Typing_Error
+)
+
+# Extract case-specific Δ distributions (ID "2188")
+Delta_LOD_paternity  <- result_Case_sim_paternity$Cases_Fa_Kn_Mo[,"2188"]
+Delta_LOD_assignment <- result_Case_sim_assignment$Cases_Fa_Kn_Mo[,"2188"]
+
+# Compute p-values
+pval_paternity  <- sum(Delta_LOD_paternity  <= LOD) / length(Delta_LOD_paternity)
+pval_assignment <- sum(Delta_LOD_assignment <= LOD) / length(Delta_LOD_assignment)
+
+pval_paternity
+pval_assignment
+```
+**Results**
+
+**Paternity test p-value:** 0.8436
+
+**Assignment test p-value:** 0.7118
+
+**Interpretation:**
+Both p-values are well above typical alpha thresholds for rejecting paternity (e.g., α = 0.01), which means the alleged father of individual 2188 is very likely to be the true father.
+However, compared to the previous test case (when the mother was unknown, p-value ≈ 0.9878), these values are lower. This suggests that when the mother is included, the statistical support is still strong but not as extreme.
+
+Overall, since 0.8436 > 0.01, we fail to reject the hypothesis that the alleged father is the true father, and the result supports biological paternity.
+The assignment test p-value (0.7118) also indicates consistency but provides slightly weaker evidence compared to the direct paternity test.
+
+### Case Study – Paternity Test for Both Parents Jointly
+
+This test evaluates whether **both alleged parents (mother and father)** are the true biological parents **simultaneously**.  
+Using `LOD_Parents_Jointly()`, we compute a joint LOD score that conditions on the genotypes of **both** parents and the offspring.  
+We then compare this LOD to the **case-specific** Δ (delta) distribution from the joint paternity simulation.  
+> Note: This mode is **paternity-only** (no assignment test), since it evaluates a specific parental pair rather than searching among multiple candidates.
+
+```r
+# Load the function
+source("./LOD_Parents_Jointly.R")
+
+# Compute joint LOD for mother+father together
+LOD <- LOD_Parents_Jointly(
+  Offs_STR     = Offs_STR,     # offspring STR vector (e.g., ID 2188)
+  Mother_STR   = Mother_STR,   # alleged mother STR vector
+  Father_STR   = Father_STR,   # alleged father STR vector
+  Allele_freq  = Allele_freq,
+  Typing_Error = Typing_Error
+)
+
+# Extract the case-specific Δ distribution (ID "2188") for the joint test
+Delta_LOD_paternity <- result_Case_sim_paternity$Cases_Both_Jointly[,"2188"]
+
+# Compute the p-value for the joint paternity test
+pval_joint <- sum(Delta_LOD_paternity <= LOD) / length(Delta_LOD_paternity)
+pval_joint
+```
+
+**Results**
+
+**Joint paternity test p-value**: 1.0000
+
+**Interpretation:**
+With p = 1.0, the observed joint LOD is at (or beyond) the extreme upper tail of the simulated true-parent distribution.
+At a stringent threshold such as α = 0.01, this provides overwhelming support that the tested pair (the alleged mother and father of ID 2188) are indeed the **true biological parents**.
+
+
+The **same procedure** applies when testing whether the **alleged mother** is the true biological mother, both when the **father is unknown** and when the **father is known**.
