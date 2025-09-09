@@ -7,7 +7,7 @@ Case_Paternity_Simulation <- function(SRT,
                                       Allele_freq=NULL,
                                       Num_Test=1000,
                                       Prop_Loci_Type=NULL,
-                                      Min_genotyped_allele= 1,
+                                      Min_genotyped_STR= 1,
                                       Father_Unknown_Mother=TRUE,
                                       Mother_Unknown_Father=TRUE,
                                       Father_Known_Mother=TRUE,
@@ -30,12 +30,12 @@ Case_Paternity_Simulation <- function(SRT,
   if(is.null(Prop_Loci_Type)){
     Prop_Loci_Type=round(colSums(!is.na(STR[,which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]),na.rm = T)/nrow(STR),4)
   }
-  # Remove individuals with less than Min_genotyped_allele genotyped
-  STR=STR[rowSums(!is.na(STR[,which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]))>=Min_genotyped_allele,]
+  # Remove individuals with less than Min_genotyped_STR genotyped
+  STR=STR[rowSums(!is.na(STR[,which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]))>=Min_genotyped_STR,]
   # calculating Typing_Error
   if(is.null(Typing_Error)){
     # load Typing_Error_Calculation function
-    source("F:/My_Projects/Paternity_algorithm/Functions/Typing_Error_Calculation.R")
+    source("./Typing_Error_Calculation.R")
     Typing_Error=Typing_Error_Calculation(STR=STR)
   }
   # Calculate the P-value distribution for the cases with information for only mother
@@ -59,7 +59,7 @@ Case_Paternity_Simulation <- function(SRT,
     registerDoParallel(n.cores)
     results=foreach (1:Num_Test, .combine=rbind) %dopar% {
       # Load Functions
-      source("F:/My_Projects/Paternity_algorithm/Functions/LOD_Both_Unknown.R")
+      source("./LOD_Both_Unknown.R")
       #------------------------------------------------
       #LOD father when the mother is unknown
       LOD_all=NULL
@@ -109,7 +109,7 @@ Case_Paternity_Simulation <- function(SRT,
     registerDoParallel(n.cores)
     results=foreach (1:Num_Test, .combine=rbind) %dopar% {
       # Load Functions
-      source("F:/My_Projects/Paternity_algorithm/Functions/LOD_Both_Unknown.R")
+      source("./LOD_Both_Unknown.R")
       #------------------------------------------------
       #LOD father when the mother is unknown
       LOD_all=NULL
@@ -159,8 +159,8 @@ Case_Paternity_Simulation <- function(SRT,
     registerDoParallel(n.cores)
     results=foreach (1:Num_Test, .combine=rbind) %dopar% {
       # Load Functions
-      source("F:/My_Projects/Paternity_algorithm/Functions/LOD_One_Parent_Known.R")
-      source("F:/My_Projects/Paternity_algorithm/Functions/LOD_Parents_Jointly.R")
+      source("./LOD_One_Parent_Known.R")
+      source("./LOD_Parents_Jointly.R")
       #------------------------------------------------
       #LOD father when the mother is unknown
       LOD_Father=NULL
@@ -238,7 +238,7 @@ Case_Paternity_Simulation <- function(SRT,
       rownames(Cases_Both_Jointly)=paste0("Sim",1:nrow(Cases_Both_Jointly))
       All_result[["Cases_Both_Jointly"]]=Cases_Both_Jointly
     }
-    cat("\nCases with mothers when the father is unknown were done!\n")
+    cat("\nCases with mothers/father/jointly when the other parent is known were done!\n")
   }
   return(All_result)
 }
