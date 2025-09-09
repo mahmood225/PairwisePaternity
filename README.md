@@ -134,4 +134,48 @@ forward_results <- Forward_Simulation(
 
 # View first few results
 head(forward_results)
+```
+
+### Backward Simulation – Paternity Assignment
+
+The function `Case_Assignment_Simulation()` is used when the goal is to **identify the true father among multiple candidate males**.  
+Instead of generating offspring from known parents, this approach works in reverse:
+
+- It creates simulated genotypes for possible fathers by sampling alleles from the offspring (and excluding maternal alleles if the mother is known).  
+- Missing alleles are filled in using population allele frequencies.  
+- Each simulated father is then modified to include realistic features like typing errors or missing loci.  
+- For every simulated candidate, the function calculates a LOD score.  
+- Repeating this many times builds a distribution of LOD scores for **true fathers**, which is then compared against the observed candidates.  
+
+This simulation helps determine which candidate father is most likely to be the biological parent, while accounting for errors and incomplete information.
+
+```r
+# Example: Running Backward Simulation for Paternity Assignment
+
+# Load function
+source("./Case_Assignment_Simulation.R")
+
+# Run backward simulation (assignment)
+result_Case_sim_assignment <- Case_Assignment_Simulation(
+  STR = STR,
+  Cases = selected_ID,            # Offspring to test for assignment
+  Typing_Error = Typing_Error,    # Locus-specific error rates
+  Allele_freq = Allele_freq,      # Allele frequencies
+  Num_Test = 5000,                # Number of simulations
+  Min_genotyped_STR = 1,          # Minimum number of STR loci per sample
+
+  # Scenarios
+  One_Parent_Unknown_Another = TRUE,  # Allow assignment when one parent is missing
+  Father_Known_Mother = TRUE,         # Test assignment when mother is known
+  Mother_Known_Father = TRUE,         # Test assignment when father is known
+
+  # Parallel computing
+  n.cores = parallel::detectCores() - 1
+)
+
+# View first few results
+head(result_Case_sim_assignment)
+```
+
+
 
