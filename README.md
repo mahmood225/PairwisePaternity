@@ -80,5 +80,58 @@ In real genetic studies, typing errors are common and their exact rates are usua
 
 To approximate realistic error rates, the function looks for mismatches between parents and offspring across the simulated population (except the last two generations, which are kept for validation). It then counts how often mismatches occur at each STR locus, giving you an estimated error rate per locus that can be used in later paternity tests.
 
+```R
+# Source the function files you need
+source("./Typing_Error_Calculation.R")
 
+# Combine pedigree and STR genotypes into one data frame
+STR <- cbind(ped, STR)
+
+# Estimate locus-specific typing error rates
+Typing_Error <- Typing_Error_Calculation(
+  STR = STR,
+  Min_genotyped_STR = 7,              # Minimum number of STR loci that must be genotyped in an individual to include it in error estimation
+  Correct_Genotype_Probability = 0.8, # Proportion of correctly assignable genotypes assumed to be true when calculating errors
+  Minimum_Typing_Error = 0.001,       # Lower bound: if the estimated error is smaller, it is set to this minimum value
+  Ensure_Correctness = FALSE,         # If TRUE, assumes assigned parents are always correct when calculating error rates
+  Mother_Offspring_Calulation = TRUE, # Use mother–offspring comparisons to estimate errors
+  Father_Offspring_Calulation = TRUE  # Use father–offspring comparisons to estimate errors
+)
+
+Typing_Error
+```
+
+### Forward Simulation – Paternity Testing
+
+The function `Forward_Simulation()` is used to check whether an alleged father is the true biological father.  
+It works by creating many simulated offspring genotypes through Mendelian inheritance (sampling alleles from the parents).  
+
+- If only the father’s genotype is known, the missing maternal alleles are generated based on population allele frequencies.  
+- Each simulated offspring is then adjusted to include realistic features like typing errors or missing loci.  
+- For every simulated offspring, the function calculates a LOD score for the alleged father.  
+- Repeating this thousands of times builds a distribution of LOD scores that represent the **true father case**.  
+- Finally, this distribution is used to test real offspring against a chosen significance level (P-value).  
+
+This makes the paternity test more reliable by providing case-specific thresholds instead of relying on population-wide assumptions.
+
+```r
+# Example: Running Forward Simulation for Paternity Test
+
+# Load function
+source("Forward_Simulation.R")
+
+# Run forward simulation
+forward_results <- Forward_Simulation(
+  STR = STR,
+  ped = ped,
+  Allele_freq = Allele_freq,
+  Typing_Error = Typing_Error,
+  Num_Test = 5000,                   # Number of simulated offspring
+  Min_genotyped_STR = 5,             # Minimum STR loci required per sample
+  Missing_parent = TRUE,             # Allow cases where mother is unknown
+  n.cores = parallel::detectCores()-1
+)
+
+# View first few results
+head(forward_results)
 
