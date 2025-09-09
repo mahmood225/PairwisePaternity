@@ -33,7 +33,7 @@ Case_Assignment_Simulation <- function(SRT,
   # calculating Typing_Error
   if(is.null(Typing_Error)){
     # load Typing_Error_Calculation function
-    source("F:/My_Projects/Paternity_algorithm/Functions/Typing_Error_Calculation.R")
+    source("./Typing_Error_Calculation.R")
     Typing_Error=Typing_Error_Calculation(STR=STR)
   }
   # Calculate the P-value distribution for the cases with information for only mother
@@ -54,7 +54,7 @@ Case_Assignment_Simulation <- function(SRT,
     registerDoParallel(n.cores)
     results=foreach (1:Num_Test, .combine=rbind) %dopar% {
       # Load Functions
-      source("F:/My_Projects/Paternity_algorithm/Functions/LOD_Both_Unknown.R")
+      source("./LOD_Both_Unknown.R")
       #------------------------------------------------
       #LOD father when the mother is unknown
       LOD_all=NULL
@@ -103,7 +103,7 @@ Case_Assignment_Simulation <- function(SRT,
     registerDoParallel(n.cores)
     results=foreach (1:Num_Test, .combine=rbind) %dopar% {
       # Load Functions
-      source("F:/My_Projects/Paternity_algorithm/Functions/LOD_One_Parent_Known.R")
+      source("./LOD_One_Parent_Known.R")
       #------------------------------------------------
       #LOD father when the mother is unknown
       LOD_all=NULL
@@ -164,7 +164,7 @@ Case_Assignment_Simulation <- function(SRT,
     registerDoParallel(n.cores)
     results=foreach (1:Num_Test, .combine=rbind) %dopar% {
       # Load Functions
-      source("F:/My_Projects/Paternity_algorithm/Functions/LOD_One_Parent_Known.R")
+      source("./LOD_One_Parent_Known.R")
       #------------------------------------------------
       #LOD father when the mother is unknown
       LOD_all=NULL
@@ -223,6 +223,7 @@ Case_Assignment_Simulation <- function(SRT,
   }
   return(All_result)
 }
+
 
 
 
