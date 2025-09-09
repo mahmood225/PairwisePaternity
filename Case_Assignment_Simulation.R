@@ -7,7 +7,7 @@ Case_Assignment_Simulation <- function(SRT,
                                       Allele_freq=NULL,
                                       Num_Test=1000,
                                       Prop_Loci_Type=NULL,
-                                      Min_genotyped_allele= 1,
+                                      Min_genotyped_STR= 1,
                                       One_Parent_Unknown_Another=TRUE,
                                       Father_Known_Mother=TRUE,
                                       Mother_Known_Father=TRUE,
@@ -18,18 +18,18 @@ Case_Assignment_Simulation <- function(SRT,
   # Allele frequency
   if(is.null(Allele_freq)){
     Allele_freq <- list()
-    for (i in which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))) {
+    for (i in which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date","Gen"))) {
       p=table(unlist(strsplit(STR[,i], ""), use.names=FALSE))/sum(table(unlist(strsplit(STR[,i], ""), use.names=FALSE)))
       Allele_freq[[length(Allele_freq)+1]] <- list(p)
     }
-    names(Allele_freq)<-colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]
+    names(Allele_freq)<-colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date","Gen"))]
   }
   # Proportion of loci typed
   if(is.null(Prop_Loci_Type)){
-    Prop_Loci_Type=round(colSums(!is.na(STR[,which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]),na.rm = T)/nrow(STR),4)
+    Prop_Loci_Type=round(colSums(!is.na(STR[,which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date","Gen"))]),na.rm = T)/nrow(STR),4)
   }
-  # Remove individuals with less than Min_genotyped_allele genotyped
-  STR=STR[rowSums(!is.na(STR[,which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]))>=Min_genotyped_allele,]
+  # Remove individuals with less than Min_genotyped_STR genotyped
+  STR=STR[rowSums(!is.na(STR[,which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date","Gen"))]))>=Min_genotyped_STR,]
   # calculating Typing_Error
   if(is.null(Typing_Error)){
     # load Typing_Error_Calculation function
@@ -59,7 +59,7 @@ Case_Assignment_Simulation <- function(SRT,
       #LOD father when the mother is unknown
       LOD_all=NULL
       for (i in 1:nrow(Cases)) {
-        STR_Offs=STR[STR$ID==Cases$ID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]]
+        STR_Offs=STR[STR$ID==Cases$ID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date","Gen"))]]
         ind2=sapply(STR_Offs,function(v) intToUtf8(utf8ToInt(v)[sort(sample(nchar(v), 1))]),USE.NAMES = FALSE)
         # All genotype to missed ones
         for (Sim_allele in which(nchar(ind2)==0)) {
@@ -108,8 +108,8 @@ Case_Assignment_Simulation <- function(SRT,
       #LOD father when the mother is unknown
       LOD_all=NULL
       for (i in 1:nrow(Cases_father)) {
-        STR_Known_Parent=STR[STR$ID==Cases_father$DamID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]]
-        STR_Offs=STR[STR$ID==Cases_father$ID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]]
+        STR_Known_Parent=STR[STR$ID==Cases_father$DamID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date","Gen"))]]
+        STR_Offs=STR[STR$ID==Cases_father$ID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date","Gen"))]]
         STR_Father=as.data.frame(matrix(rep(NA_character_,ncol(STR_Offs)),1))
         colnames(STR_Father)=colnames(STR_Offs)
         for (j in 1:ncol(STR_Father)) {
@@ -169,8 +169,8 @@ Case_Assignment_Simulation <- function(SRT,
       #LOD father when the mother is unknown
       LOD_all=NULL
       for (i in 1:nrow(Cases_mother)) {
-        STR_Known_Parent=STR[STR$ID==Cases_mother$SireID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]]
-        STR_Offs=STR[STR$ID==Cases_mother$ID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date"))]]
+        STR_Known_Parent=STR[STR$ID==Cases_mother$SireID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date","Gen"))]]
+        STR_Offs=STR[STR$ID==Cases_mother$ID[i],colnames(STR)[which(!colnames(STR)%in%c("ID","Sex", "DamID", "SireID", "Date","Gen"))]]
         STR_Mother=as.data.frame(matrix(rep(NA_character_,ncol(STR_Offs)),1))
         colnames(STR_Mother)=colnames(STR_Offs)
         for (j in 1:ncol(STR_Mother)) {
