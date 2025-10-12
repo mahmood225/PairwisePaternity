@@ -5,6 +5,28 @@ Our simulations demonstrated that this approach significantly reduces false-posi
 
 Overall, the Pairwise algorithm complements existing tools such as CERVUS and COLONY by providing a lightweight, simulation-based framework for case-by-case paternity resolution. It is especially suited for studies requiring flexibility, computational efficiency, and robust control of false assignments. The R scripts in this repository reproduce the analyses in the paper and provide an open framework for further refinement and adaptation to both microsatellite (STR) and SNP-based parentage datasets.
 
+## Citation
+
+If you use **PairwisePaternity** in academic research, please cite our paper:
+
+Amiri Roudbar, M., Mousavi, S.F., Akbarzadeh, M., Brounts, S.H., & Momen, M. (2025).
+**Pairwise Paternity Assignment With Forward–Backward Simulations: Refining CERVUS Using Trio-Based Likelihood and Locus-Specific Error Rates.**
+*Ecology and Evolution*, 15(10), e72230. https://doi.org/10.1002/ece3.72230
+
+**BibTeX**
+```bibtex
+@article{AmiriRoudbar2025Pairwise,
+  author  = {Mahmoud Amiri Roudbar and Seyedeh Fatemeh Mousavi and Mahdi Akbarzadeh and Sabrina H. Brounts and Mehdi Momen},
+  title   = {Pairwise Paternity Assignment With Forward–Backward Simulations: Refining CERVUS Using Trio-Based Likelihood and Locus-Specific Error Rates},
+  journal = {Ecology and Evolution},
+  year    = {2025},
+  volume  = {15},
+  number  = {10},
+  pages   = {e72230},
+  doi     = {10.1002/ece3.72230}
+}
+
+
 ## Workflow
 
 The workflow consists of 6 main functions that process genotype data and estimate parentage:
