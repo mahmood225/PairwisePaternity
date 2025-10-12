@@ -26,6 +26,16 @@ Amiri Roudbar, M., Mousavi, S.F., Akbarzadeh, M., Brounts, S.H., & Momen, M. (20
   doi     = {10.1002/ece3.72230}
 }
 ```
+## License & Commercial Use
+
+This software is **free for non-commercial academic research** and personal use.
+
+- **Non-commercial use:** permitted (with citation).
+- **Commercial use** (including for-profit services/products, internal business use, and paid consulting): **requires a commercial license**.
+
+To discuss a commercial license, please contact **Mahmoud Amiri Roudbar** (<mahmood.amiri225@gmail.com>) or open an issue on this repository.
+
+By using this software you agree to these terms.
 
 ## Workflow
 
