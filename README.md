@@ -14,7 +14,7 @@ Amiri Roudbar, M., Mousavi, S.F., Akbarzadeh, M., Brounts, S.H., & Momen, M. (20
 *Ecology and Evolution*, 15(10), e72230. https://doi.org/10.1002/ece3.72230
 
 **BibTeX**
-bibtex
+```bibtex
 @article{AmiriRoudbar2025Pairwise,
   author  = {Mahmoud Amiri Roudbar and Seyedeh Fatemeh Mousavi and Mahdi Akbarzadeh and Sabrina H. Brounts and Mehdi Momen},
   title   = {Pairwise Paternity Assignment With Forward–Backward Simulations: Refining CERVUS Using Trio-Based Likelihood and Locus-Specific Error Rates},
@@ -25,7 +25,7 @@ bibtex
   pages   = {e72230},
   doi     = {10.1002/ece3.72230}
 }
-
+```
 
 ## Workflow
 
